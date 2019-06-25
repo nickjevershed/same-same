@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Same Same | Merge CSVs with fuzzy string matching </title>
+
+		<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="css/normalize.css">
+		<link rel="stylesheet" href="css/skeleton.css">
+	    <link rel="stylesheet" type="text/css" href="css/main.css" />
+	</head>
+	<body>
+	
+		<div id="outer-wrapper">
+			<div class="section header">
+				<div class="container">
+					<div class="row">
+					
+					<div class="one-half column">
+						<h1>Same Same</h1>
+						<h3>Merging your CSVs with fuzzy string matching and user input</h3>
+					</div>
+
+
+					</div>
+				</div>	
+			</div>	
+
+			<div class="section app">
+				<div id="app">
+
+				</div>	
+			</div>					
+		</div>
+	
+
+	<script id='template' type='text/html'>
+		<div class="container">
+
+			{{#if (upto == 0)}}
+				{{>fileUpload}}
+			{{/if}}
+
+			{{#if (upto == 1)}}
+				{{>mergeOptions}}
+			{{/if}}
+
+			<div class="row controls">
+				<button class="{{buttonStatus}}" onclick="progress();">{{buttonText}}</button>
+			</div>
+		</div>	
+	</script>	
+
+
+	<script id='fileUpload' type='text/html'>
+
+			<div class="row">
+				<h4>First, add two CSV files</h4>
+			</div>
+
+			<div class="row">
+
+				<div class="one-half column fileUpload" id="source" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+					<div class="inner">
+						<p>The source file to which new data will be appended</p>
+						<input type="file" name="File Upload" accept=".csv"/>
+					</div>	
+				</div>	
+
+				<div class="one-half column fileUpload" id="merge" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+					<div class="inner">
+						<p>The merge file from which new data will be added</p>
+						<input type="file" name="File Upload" accept=".csv" />
+					</div>
+				</div>	
+			</div>
+
+	</script>
+
+	<script id='mergeOptions' type='text/html'>
+			<div class="row">
+				<h4>Select your merge options</h4>
+			</div>
+
+			<div class="row">
+				<p>Choose which columns to match the CSVs on</p>
+				<div class="optionItem">Source CSV column to match: <select>{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+				<div class="optionItem">Merge CSV column to match: <select>{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+			</div>
+
+			<div class="row">
+				Choose a ratio threshold for matching: <input type="number" min="1" max="100" id="ratioThreshold" value="90">
+			</div>
+
+			<div class="row">
+				Choose your fuzzy string matching method: <select><option value="ratio">simple ratio</option><option value="partial_ratio">partial ratio</option><option value="token_sort_ratio">token sort ratio</option><option value="token_set_ratio">token set ratio</option></select>
+			</div>
+
+			<div class="row">
+				Manually check fuzzy matches: <select><option value="manual">yes</option><option value="automatic">no</option></select>
+			</div>
+
+			{{#if (options.check_mode == "manual")}}
+			<div class="row">
+				Preference for handling multiple matches: <select><option value="best_match">best match</option><option value="see_all">see all</option></select>
+			</div>
+			{{/if}}
+
+	</script>
+
+
+	<script type="text/javascript" src="js/fuzzball.js"></script>
+	<script type="text/javascript" src="js/papaparse.min.js"></script>
+	<script type="text/javascript" src="js/ractive.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+	</body>
+</html>

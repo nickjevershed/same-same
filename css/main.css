@@ -1,0 +1,24 @@
+.header {
+	margin-top:10%;
+}
+
+.app {
+	padding-top:5%;
+	padding-bottom:5%;
+	background: #eaeaea;
+}
+
+.fileUpload {
+	min-height:200px;
+	border: 1px dashed #000;
+	margin-bottom:20px;
+}
+
+.controls button {
+	float:right;
+}
+
+.optionItem {
+	display: inline-block;
+	margin-right:10px;
+}
