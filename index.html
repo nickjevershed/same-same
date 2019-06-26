@@ -54,6 +54,10 @@
 				{{>resultsProgress}}
 			{{/if}}
 
+			{{#if (upto == 4)}}
+				{{>done}}
+			{{/if}}
+
 			<div class="row controls">
 				{{#if buttonStatus == true}}
 					<button class="{{buttonStatus}} button-primary" onclick="progress();">{{buttonText}}</button>
@@ -184,12 +188,43 @@
 			<h4>Merging...</h4>
 			<p>Checked {{progressRows}} out of {{totalRows}} rows</p>
 		</div>
+		{{#if userInput == true}}
+		<div class="row">
+			<div>Do you want to match these?</div>
+		</div>	
+		<div class="row">
+			
+				<div class="one-half column">
+					{{sourceMatch}}
+				</div>	
+
+				<div class="one-half column">
+					{{mergeMatch}}
+				</div>
+			
+		</div>	
 
 		<div class="row">
-
+				<button class="button-primary" id="discard" >discard</button>
+				<button class="button-primary" id="keep">keep</button>
 		</div>
+		{{/if}}
+
 
 	</script>
+
+
+		<script id='done' type='text/html'>
+			<div class="row">
+				<h4>Done!</h4>
+				<p>Checked {{progressRows}} out of {{totalRows}} rows</p>
+			</div>
+			<div class="row controls">
+					<a class="button-primary" onclick="progress();" id="downloadButton">download csv</a>
+			</div>
+
+
+		</script>
 
 
 	<script type="text/javascript" src="js/fuzzball.umd.min.js"></script>
