@@ -12,6 +12,20 @@
 	min-height:200px;
 	border: 1px dashed #000;
 	margin-bottom:20px;
+	position: relative;
+}
+
+.dropZone {
+	position: absolute;
+	z-index: 10;
+	min-height:200px;
+	width: 100%;
+}
+
+.fileFeedback {
+	min-height:200px;
+	border: 1px solid #000;
+	margin-bottom:20px;
 }
 
 .controls button {

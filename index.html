@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Same Same | Merge CSVs with fuzzy string matching </title>
 
-		<link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+		<!-- <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css"> -->
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/skeleton.css">
 	    <link rel="stylesheet" type="text/css" href="css/main.css" />
@@ -43,11 +43,21 @@
 			{{/if}}
 
 			{{#if (upto == 1)}}
+				{{>csvFeedback}}
+			{{/if}}
+
+			{{#if (upto == 2)}}
 				{{>mergeOptions}}
 			{{/if}}
 
+			{{#if (upto == 3)}}
+				{{>resultsProgress}}
+			{{/if}}
+
 			<div class="row controls">
-				<button class="{{buttonStatus}}" onclick="progress();">{{buttonText}}</button>
+				{{#if buttonStatus == true}}
+					<button class="{{buttonStatus}} button-primary" onclick="progress();">{{buttonText}}</button>
+				{{/if}}
 			</div>
 		</div>	
 	</script>	
@@ -61,17 +71,25 @@
 
 			<div class="row">
 
-				<div class="one-half column fileUpload" id="source" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+				<div class="one-half column fileUpload source">
+					<div class="dropZone" id="source" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" onclick="clickButton('source');">
+
+					</div>
 					<div class="inner">
 						<p>The source file to which new data will be appended</p>
-						<input type="file" name="File Upload" accept=".csv"/>
-					</div>	
+						<input type="file" name="File Upload" accept=".csv" onchange="checkUploads();"/>
+					</div>
+					
 				</div>	
 
-				<div class="one-half column fileUpload" id="merge" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
+				<div class="one-half column fileUpload merge" id="merge">
+
+					<div class="dropZone" id="merge" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);" onclick="clickButton('merge');">
+
+					</div>
 					<div class="inner">
 						<p>The merge file from which new data will be added</p>
-						<input type="file" name="File Upload" accept=".csv" />
+						<input type="file" name="File Upload" accept=".csv" onchange="checkUploads();"/>
 					</div>
 				</div>	
 			</div>
@@ -85,32 +103,96 @@
 
 			<div class="row">
 				<p>Choose which columns to match the CSVs on</p>
-				<div class="optionItem">Source CSV column to match: <select>{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
-				<div class="optionItem">Merge CSV column to match: <select>{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+				<div class="optionItem">Source CSV column to match: <select value="{{options.source_match_col}}">{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+				<div class="optionItem">Merge CSV column to match: <select value="{{options.merge_match_col}}">{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
 			</div>
 
 			<div class="row">
-				Choose a ratio threshold for matching: <input type="number" min="1" max="100" id="ratioThreshold" value="90">
+				Choose a ratio threshold for matching: <input type="number" min="1" max="100" id="ratioThreshold" value="{{options.threshold}}">
 			</div>
 
 			<div class="row">
-				Choose your fuzzy string matching method: <select><option value="ratio">simple ratio</option><option value="partial_ratio">partial ratio</option><option value="token_sort_ratio">token sort ratio</option><option value="token_set_ratio">token set ratio</option></select>
+				Choose your fuzzy string matching method: <select value="{{options.type}}"><option value="ratio" >simple ratio</option><option value="partial_ratio">partial ratio</option><option value="token_sort_ratio">token sort ratio</option><option value="token_set_ratio">token set ratio</option></select>
 			</div>
 
 			<div class="row">
-				Manually check fuzzy matches: <select><option value="manual">yes</option><option value="automatic">no</option></select>
+				<p>Force two columns to be equal when matching</p>
+				<div class="optionItem">Source CSV column to enforce match: <select value="{{options.force_match_source}}">{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+				<div class="optionItem">Merge CSV column to enforce match: <select value="{{options.force_match_merge}}">{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
+			</div>
+
+			<div class="row">
+				Manually check fuzzy matches: <select value="{{options.check_mode}}"><option value="manual">yes</option><option value="automatic">no</option></select>
 			</div>
 
 			{{#if (options.check_mode == "manual")}}
 			<div class="row">
-				Preference for handling multiple matches: <select><option value="best_match">best match</option><option value="see_all">see all</option></select>
+				Preference for handling multiple matches: <select value="{{options.results_mode}}"><option value="best_match">best match</option><option value="see_all">see all</option></select>
 			</div>
 			{{/if}}
 
 	</script>
 
+	<script id='csvFeedback' type='text/html'>
+			<div class="row">
+				<h4>{{uploadStatus.heading}}</h4>
+				<p>{{uploadStatus.message}}</p>
+			</div>
 
-	<script type="text/javascript" src="js/fuzzball.js"></script>
+			<div class="row">
+
+				<div class="one-half column fileFeedback">
+					<h5>Source CSV</h5>
+					<b>Rows:</b> {{sourceCSV.data.length}}<br>
+					<b>Columns:</b> {{sourceCSV.meta.fields.length}}<br>
+					{{#if sourceCSV.errors}}
+						<b>Errors</b><br> 
+						{{#each sourceCSV.errors as error}}
+						<p>
+							<b>Type:</b> {{error.type}}<br>
+							<b>Details:</b> {{error.message}}<br>
+							<b>Location:</b> row {{error.row}}<br>
+
+						</p>
+						{{/each}}
+					{{/if}}
+
+				</div>	
+
+				<div class="one-half column fileFeedback">
+					<h5>Merge CSV</h5>
+					<b>Rows:</b> {{mergeCSV.data.length}}<br>
+					<b>Columns:</b> {{mergeCSV.meta.fields.length}}<br>
+					{{#if mergeCSV.errors}}
+						<b>Errors</b><br> 
+						{{#each mergeCSV.errors as error}}
+						<p>
+							<b>Type:</b> {{error.type}}<br>
+							<b>Details:</b> {{error.message}}<br>
+							<b>Location:</b> row {{error.row}}<br>
+
+						</p>
+						{{/each}}
+					{{/if}}
+				</div>	
+			</div>
+
+	</script>
+
+	<script id='resultsProgress' type='text/html'>
+		<div class="row">
+			<h4>Merging...</h4>
+			<p>Checked {{progressRows}} out of {{totalRows}} rows</p>
+		</div>
+
+		<div class="row">
+
+		</div>
+
+	</script>
+
+
+	<script type="text/javascript" src="js/fuzzball.umd.min.js"></script>
 	<script type="text/javascript" src="js/papaparse.min.js"></script>
 	<script type="text/javascript" src="js/ractive.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
