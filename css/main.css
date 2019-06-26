@@ -1,5 +1,6 @@
 .header {
 	margin-top:10%;
+	margin-bottom:2%;
 }
 
 .app {
@@ -35,4 +36,13 @@
 .optionItem {
 	display: inline-block;
 	margin-right:10px;
+}
+
+.top-image img {
+	max-width:250px;
+	margin: auto;
+}
+
+.top-image {
+	text-align: center;
 }

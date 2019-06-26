@@ -20,9 +20,11 @@
 					<div class="one-half column">
 						<h1>Same Same</h1>
 						<h3>Merging your CSVs with fuzzy string matching and user input</h3>
+						<p>This is an experimental web app undergoing development. <a href="#notes">Read the notes</a>.<p>
 					</div>
-
-
+					<div class="one-half column top-image">
+						<img src="img/same-same.svg"/>
+					</div>
 					</div>
 				</div>	
 			</div>	
@@ -30,6 +32,21 @@
 			<div class="section app">
 				<div id="app">
 
+				</div>	
+			</div>
+
+			<div class="section notes">
+				<div class="container">
+					<div class="row">
+						<a name="notes"></a>
+						<h3>What is this and how does it work</h3>
+						<p>Same Same is a tool for joining data when the fields you want to join by aren't necessarily perfect. This happens frequently! A good example is trying to match the names of companies who have made donations to political parties with companies who are government contractors. Sometimes the names with have "PTY LTD" in them, sometimes they won't. Sometimes there's a long version of the name or a short version. Anyone who has to work with data will know about this issue.</p>
+						<p>Same Same lets you join on these fields, even if they're slightly different. It does this by first trying for perfect matches (after converting to lowercase and trimming whitespace). If it can't find a perfect match it will try a fuzzy match using the options you give it at the start. This means it is using an algorithm (Levenshtein distance) to produce a score of how similar two strings are.</p>
+						<p>Then, it gives you an interface to go through the possible matches and decide which ones you want. The interface bit is the real bonus here, as fuzzy string matching can be done easily using scripts but sorting through the matches can be annoying! This hopefully makes it a bit easier.</p>
+						<h3>Important technical information</h3>
+						<p>This is a very early build, and a whole bunch of the options don't work. It will get better over time. Use at your own risk.</p>
+						<p>You can get me at <a href="https://twitter.com/NickEvershed">@NickEvershed</a> with feedback, or report a bug/issue/suggest feature/contribute at the <a href="https://github.com/nickjevershed/same-same">GitHub repo here</a>.</p> 
+					</div>	
 				</div>	
 			</div>					
 		</div>
@@ -220,7 +237,7 @@
 				<p>Checked {{progressRows}} out of {{totalRows}} rows</p>
 			</div>
 			<div class="row controls">
-					<a class="button-primary" onclick="progress();" id="downloadButton">download csv</a>
+					<a class="button button-primary" onclick="progress();" id="downloadButton">download csv</a>
 			</div>
 
 
