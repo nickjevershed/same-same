@@ -3,6 +3,7 @@ var sourceCSV = null;
 var mergeCSV = null;
 var outputCSV = null;
 var upto = 0;
+var didFuzzy = false;
 
 var ractive = new Ractive({
 			el: '#app',
@@ -101,22 +102,26 @@ function mergeTheCSVs() {
 						newRow[header + "_merge"] = matches[0][header]
 					})	
 
+					newRow['ratio_merge'] = "";
+						
 					addRowAndRestart()	
 				}
 
-				// More than one exact match, later on add the option to manually select which one you want
+				// More than one exact match, get the first one (maybe add manual mode later)
 
 				else if (matches.length > 1) {
 					mergeCSV.meta.fields.forEach(function(header) {
 						newRow[header + "_merge"] = matches[0][header]
 					})
-
+					newRow['ratio_merge'] = "";
 					addRowAndRestart()
 				}
 
 				// No exact match lets go FUZZY 
 
 				else if (matches.length === 0) {
+
+					didFuzzy = true;
 					
 					mergeCSV.data.forEach(function(merge_row) {
 
@@ -127,7 +132,7 @@ function mergeTheCSVs() {
 						if (options.force_match_source != null && options.force_match_merge != null) {
 
 							if (ratio >= options.threshold && source_row[options.force_match_source].trim().toLowerCase() === source_row[options.force_match_merge].trim().toLowerCase()) {
-								merge_row.ratio = ratio
+								merge_row.ratio_merge = ratio
 								matches.push(merge_row)
 							} 
 						
@@ -135,102 +140,118 @@ function mergeTheCSVs() {
 
 						else {
 							if (ratio >= options.threshold) {
-								merge_row.ratio = ratio
+								merge_row.ratio_merge = ratio
 								matches.push(merge_row)
 							} 
 						}
 
 					});
 					
+					// Nothing matched, restart loop
+
 					if (matches.length === 0) {
 							mergeCSV.meta.fields.forEach(function(header) {
 									newRow[header + "_merge"] = ""
 								})
+							newRow['ratio_merge'] = "";
 							addRowAndRestart();
 						}
 
+					// Only one match	
 
-					if (matches.length === 1) {
-							mergeCSV.meta.fields.forEach(function(header) {
-							newRow[header + "_merge"] = matches[0][header]
-						})	
+					// if (matches.length === 1) {
+					// 		mergeCSV.meta.fields.forEach(function(header) {
+					// 		newRow[header + "_merge"] = matches[0][header]
+					// 	})	
 
-						addRowAndRestart()	
-					}
+					// 	addRowAndRestart()	
+					// }
 
-					if (matches.length > 1) {
+					// One or more matches
+
+					if (matches.length >= 1) {
+
+						// Sort Get best matches first
+
+						matches.sort(function(a, b) {
+							    return a.ratio - b.ratio;
+						});	
+
+						// If we only want to see the best match, discard the rest
 
 						if (options.results_mode === "best_match") {
-							matches.sort(function(a, b) {
-							    return a.ratio - b.ratio;
-							});	
+							matches = matches.slice(0,1)
+						}	
 						
-							
-						
-							if (options.check_mode === "automatic") {
-								mergeCSV.meta.fields.forEach(function(header) {
-									newRow[header + "_merge"] = matches[0][header]
-								})	
-							}
+						// Automatic mode gets the best match regardless
 
-							else {
+						if (options.check_mode === "automatic") {
+							mergeCSV.meta.fields.forEach(function(header) {
+								newRow[header + "_merge"] = matches[0][header]
+							})	
 
-								ui = 0
-								userLoop();
+							newRow['ratio_merge'] = matches[0].ratio_merge;
+							addRowAndRestart()
+						}
 
-								function userLoop() {
 
-									if (ui < matches.length) {
+						// Manual mode for checking matches
 
-										ractive.set({
-											'userInput':true,
-											'sourceMatch':sourceString,
-											'mergeMatch':matches[ui][options.merge_match_col]
-										}).then(function() {
-											document.getElementById("discard").onclick = discard
-											document.getElementById("keep").onclick = keep
-											console.log("waiting for input");
-										})
+						else {
 
-										var discard = function discard() {
-											console.log("discard")
-											ui = ui + 1
-											userLoop();
-										}
+							ui = 0
+							userLoop();
 
-										var keep = function keep() {
+							function userLoop() {
 
-											// Add selected data
+								if (ui < matches.length) {
 
-											mergeCSV.meta.fields.forEach(function(header) {
-												newRow[header + "_merge"] = matches[ui][header]
-											})	
+									ractive.set({
+										'userInput':true,
+										'sourceMatch':sourceString,
+										'mergeMatch':matches[ui][options.merge_match_col]
+									}).then(function() {
+										document.getElementById("discard").onclick = discard
+										document.getElementById("keep").onclick = keep
+										console.log("waiting for input");
+									})
 
-											ractive.set({
-												'userInput':false
-											}).then(addRowAndRestart())
-										}
+									var discard = function discard() {
+										console.log("discard")
+										ui = ui + 1
+										userLoop();
 									}
 
-									else {
+									var keep = function keep() {
+
+										// Add selected data
 
 										mergeCSV.meta.fields.forEach(function(header) {
-												newRow[header + "_merge"] = ""
-										})
-
+											newRow[header + "_merge"] = matches[ui][header]
+										})	
+										newRow['ratio_merge'] = matches[ui]['ratio_merge']
 										ractive.set({
 											'userInput':false
 										}).then(addRowAndRestart())
-										console.log("restarting")
-										
 									}
-								
 								}
 
+								else {
+
+									mergeCSV.meta.fields.forEach(function(header) {
+											newRow[header + "_merge"] = ""
+									})
+									newRow['ratio_merge'] = "";
+									ractive.set({
+										'userInput':false
+									}).then(addRowAndRestart())
+									console.log("restarting")
+									
+								}
+							
 							}
 
 						}
-						
 
 					}
 
