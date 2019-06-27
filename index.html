@@ -123,7 +123,7 @@
 			</div>
 
 			<div class="row">
-				<p>Choose which columns to match the CSVs on</p>
+				<p><b>Choose which columns to match the CSVs on</b></p>
 				<div class="optionItem">Source CSV column to match: <select value="{{options.source_match_col}}">{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
 				<div class="optionItem">Merge CSV column to match: <select value="{{options.merge_match_col}}">{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
 			</div>
@@ -137,7 +137,9 @@
 			</div>
 
 			<div class="row">
-				<p>Force two columns to be equal when matching</p>
+				<p><b>Force two columns to be equal when matching</b><br>
+					eg if you have states, postcodes for both datasets you can ensure these match to make fuzzy matching more accurate
+				</p>
 				<div class="optionItem">Source CSV column to enforce match: <select value="{{options.force_match_source}}">{{#each sourceHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
 				<div class="optionItem">Merge CSV column to enforce match: <select value="{{options.force_match_merge}}">{{#each mergeHeaders}}<option value="{{.}}">{{.}}</option>{{/each}}</select></div>
 			</div>
@@ -148,7 +150,7 @@
 
 			{{#if (options.check_mode == "manual")}}
 			<div class="row">
-				Preference for handling multiple matches: <select value="{{options.results_mode}}"><option value="best_match">best match</option><option value="see_all">see all</option></select>
+				Preference for handling multiple matches: <select value="{{options.results_mode}}"><option value="best_match">best match</option><option value="see_all">check all</option></select>
 			</div>
 			{{/if}}
 
