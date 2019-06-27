@@ -13,7 +13,6 @@ var ractive = new Ractive({
 				mergeCSV: mergeCSV,
 				buttonText: "process",
 				buttonStatus: false,
-				buttonStatus: "inactive",
 				upto:upto,
 				sourceHeaders:[],
 				mergeHeaders:[],
@@ -166,6 +165,8 @@ function mergeTheCSVs() {
 							    return a.ratio - b.ratio;
 							});	
 						
+							
+						
 							if (options.check_mode === "automatic") {
 								mergeCSV.meta.fields.forEach(function(header) {
 									newRow[header + "_merge"] = matches[0][header]
@@ -237,7 +238,7 @@ function mergeTheCSVs() {
 
 			function addRowAndRestart() {
 				outputCSV.push(newRow);
-				ractive.set('progressRows',i + 1)
+				ractive.set({'progressRows':i + 1, 'buttonStatus':false})
 				i = i + 1;
 				setTimeout(loop, 0);
 			}	
@@ -369,7 +370,8 @@ function progress() {
 		
 		ractive.set({
 			'upto':upto,
-			'progressRows':1
+			'progressRows':1,
+			'buttonStatus':false
 		}).then( function () {
 				mergeTheCSVs();
 		})

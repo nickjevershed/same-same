@@ -1,5 +1,8 @@
 .header {
 	margin-top:10%;
+}
+
+.section {
 	margin-bottom:2%;
 }
 
@@ -23,6 +26,10 @@
 	width: 100%;
 }
 
+.inner {
+	padding: 5px;
+}
+
 .fileFeedback {
 	min-height:200px;
 	border: 1px solid #000;
@@ -41,6 +48,13 @@
 .top-image img {
 	max-width:250px;
 	margin: auto;
+}
+
+@media (max-width: 550px) {
+	.top-image {
+		display: none;
+	}
+	
 }
 
 .top-image {
