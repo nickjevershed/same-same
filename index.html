@@ -165,38 +165,41 @@
 			<div class="row">
 
 				<div class="one-half column fileFeedback">
-					<h5>Source CSV</h5>
-					<b>Rows:</b> {{sourceCSV.data.length}}<br>
-					<b>Columns:</b> {{sourceCSV.meta.fields.length}}<br>
-					{{#if sourceCSV.errors}}
-						<b>Errors</b><br> 
-						{{#each sourceCSV.errors as error}}
-						<p>
-							<b>Type:</b> {{error.type}}<br>
-							<b>Details:</b> {{error.message}}<br>
-							<b>Location:</b> row {{error.row}}<br>
+					<div class="inner">
+						<h5>Source CSV</h5>
+						<b>Rows:</b> {{sourceCSV.data.length}}<br>
+						<b>Columns:</b> {{sourceCSV.meta.fields.length}}<br>
+						{{#if sourceCSV.errors}}
+							<b>Errors</b><br> 
+							{{#each sourceCSV.errors as error}}
+							<p>
+								<b>Type:</b> {{error.type}}<br>
+								<b>Details:</b> {{error.message}}<br>
+								<b>Location:</b> row {{error.row}}<br>
 
-						</p>
-						{{/each}}
-					{{/if}}
-
+							</p>
+							{{/each}}
+						{{/if}}
+					</div>
 				</div>	
 
 				<div class="one-half column fileFeedback">
-					<h5>Merge CSV</h5>
-					<b>Rows:</b> {{mergeCSV.data.length}}<br>
-					<b>Columns:</b> {{mergeCSV.meta.fields.length}}<br>
-					{{#if mergeCSV.errors}}
-						<b>Errors</b><br> 
-						{{#each mergeCSV.errors as error}}
-						<p>
-							<b>Type:</b> {{error.type}}<br>
-							<b>Details:</b> {{error.message}}<br>
-							<b>Location:</b> row {{error.row}}<br>
+					<div class="inner">
+						<h5>Merge CSV</h5>
+						<b>Rows:</b> {{mergeCSV.data.length}}<br>
+						<b>Columns:</b> {{mergeCSV.meta.fields.length}}<br>
+						{{#if mergeCSV.errors}}
+							<b>Errors</b><br> 
+							{{#each mergeCSV.errors as error}}
+							<p>
+								<b>Type:</b> {{error.type}}<br>
+								<b>Details:</b> {{error.message}}<br>
+								<b>Location:</b> row {{error.row}}<br>
 
-						</p>
-						{{/each}}
-					{{/if}}
+							</p>
+							{{/each}}
+						{{/if}}
+					</div>	
 				</div>	
 			</div>
 
@@ -207,25 +210,34 @@
 			<h4>Merging...</h4>
 			<p>Checked {{progressRows}} out of {{totalRows}} rows</p>
 		</div>
-		{{#if userInput == true}}
+		{{#if userInput == true}}	
 		<div class="row">
-			<div>Do you want to match these?</div>
+			<p>Match {{matchCounter}} of {{matchTotal}}. Ratio: {{matchRatio}}</p>
+		</div>
+
+		<div class="row">
+				<div class="one-half column">
+					Source field
+				</div>
+				<div class="one-half column">
+					Merge field
+				</div>
 		</div>	
 		<div class="row">
-			
 				<div class="one-half column">
-					{{sourceMatch}}
+					<h5>{{sourceMatch}}</h5>
 				</div>	
 
 				<div class="one-half column">
-					{{mergeMatch}}
+					<h5>{{mergeMatch}}</h5>
 				</div>
-			
 		</div>	
 
 		<div class="row">
+			<div class="right">
 				<button class="button-primary" id="discard" >discard</button>
 				<button class="button-primary" id="keep">keep</button>
+			</div>	
 		</div>
 		{{/if}}
 

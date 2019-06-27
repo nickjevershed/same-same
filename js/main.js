@@ -22,6 +22,9 @@ var ractive = new Ractive({
 				userInput:false,
 				sourceMatch:null,
 				mergeMatch:null,
+				matchCounter:0,
+				matchTotal:0,
+				matchRatio:0,
 				uploadStatus:{"heading":"Success!","message":"Successfully imported CSVs. Check to make sure everything looks right, then you're all good to merge"}
 			}
 });
@@ -209,7 +212,10 @@ function mergeTheCSVs() {
 									ractive.set({
 										'userInput':true,
 										'sourceMatch':sourceString,
-										'mergeMatch':matches[ui][options.merge_match_col]
+										'mergeMatch':matches[ui][options.merge_match_col],
+										'matchCounter':ui +1,
+										'matchTotal':matches.length,
+										'matchRatio':matches[ui]['ratio_merge']
 									}).then(function() {
 										document.getElementById("discard").onclick = discard
 										document.getElementById("keep").onclick = keep
