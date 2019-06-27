@@ -83,11 +83,15 @@ function mergeTheCSVs() {
 				mergeCSV.data.forEach(function(merge_row) {
 
 					var mergeString = merge_row[options.merge_match_col].trim().toLowerCase()
-
+					// console.log(source_row[options.force_match_source])
+					// console.log(merge_row)
 					if (options.force_match_source != null && options.force_match_merge != null) {
-						if (sourceString === mergeString && source_row[options.force_match_source].trim().toLowerCase() === source_row[options.force_match_merge].trim().toLowerCase()) {
+						if (source_row[options.force_match_source] != "" && merge_row[options.force_match_merge] != "") {
+							if (sourceString === mergeString && source_row[options.force_match_source].trim().toLowerCase() === merge_row[options.force_match_merge].trim().toLowerCase()) {
 							matches.push(merge_row)
-						} 
+							} 
+						}
+						
 					}
 
 					else {
@@ -133,11 +137,12 @@ function mergeTheCSVs() {
 						var ratio = fuzzball[options.type](sourceString, mergeString);
 
 						if (options.force_match_source != null && options.force_match_merge != null) {
-
-							if (ratio >= options.threshold && source_row[options.force_match_source].trim().toLowerCase() === source_row[options.force_match_merge].trim().toLowerCase()) {
-								merge_row.ratio_merge = ratio
-								matches.push(merge_row)
-							} 
+							if (source_row[options.force_match_source] != "" && merge_row[options.force_match_merge] != "") {
+								if (ratio >= options.threshold && source_row[options.force_match_source].trim().toLowerCase() === merge_row[options.force_match_merge].trim().toLowerCase()) {
+									merge_row.ratio_merge = ratio
+									matches.push(merge_row)
+								} 
+							}
 						
 						}
 
