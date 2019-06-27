@@ -6,7 +6,7 @@ Same Same lets you join on these fields, even if they're slightly different. It 
 
 Then, it gives you an interface to go through the possible matches and decide which ones you want. The interface bit is the real bonus here, as fuzzy string matching can be done easily using scripts but sorting through the matches can be annoying! This hopefully makes it a bit easier.
 
-### Important technical information<
+### Important technical information
 
 This is a very early build, and a whole bunch of the options don't work. It will get better over time. Use at your own risk.
 
