@@ -8,6 +8,6 @@ Then, it gives you an interface to go through the possible matches and decide wh
 
 ### Important technical information
 
-This is a very early build, and a whole bunch of the options don't work. It will get better over time. Use at your own risk.
+This is a very early build, and a whole lot of the options don't work. It will get better over time - I want to add a bunch of features. Use at your own risk.
 
 You can get me at [@NickEvershed](https://twitter.com/NickEvershed) with feedback, or report a bug/issue/suggest feature/contribute at the GitHub repo here.
